@@ -97,10 +97,8 @@
         <button id="main_btn" class="btn-pay" disabled>Оформить заказ</button>
     </div>
 
-    <script>
-       const tg = window.Telegram.WebApp;
-    
-    // Инициализация и разворот
+   <script>
+    const tg = window.Telegram.WebApp;
     tg.ready();
     tg.expand();
 
@@ -108,56 +106,45 @@
     const btn = document.getElementById('main_btn');
     const input = document.getElementById('p_id');
 
-    // Функция выбора карточки
     function select(el, uc, price) {
         document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
         el.classList.add('active');
         selected = { uc: String(uc), price: String(price) };
         validate();
-        if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
     }
 
-    // Проверка заполнения
     function validate() {
-        const val = input.value.trim();
-        if (selected && val.length >= 5) {
-            btn.disabled = false;
-            btn.style.opacity = "1";
+        if (selected && input.value.trim().length >= 5) {
+            btn.disabled = false; btn.style.opacity = "1";
         } else {
-            btn.disabled = true;
-            btn.style.opacity = "0.3";
+            btn.disabled = true; btn.style.opacity = "0.3";
         }
     }
 
     input.addEventListener('input', validate);
 
-    // НАЖАТИЕ НА КНОПКУ
-    btn.addEventListener('click', () => {
+    btn.onclick = function() {
         try {
-            const dataToSend = {
+            const data = JSON.stringify({
                 amount: selected.uc,
                 price: selected.price,
                 player_id: input.value.trim()
-            };
+            });
 
-            // Вибрация при успехе
-            if (tg.HapticFeedback) {
-                tg.HapticFeedback.notificationOccurred('success');
-            }
+            // Пытаемся отправить данные
+            tg.sendData(data);
+            
+            // Если через 500мс окно не закрылось, закрываем принудительно
+            setTimeout(() => { tg.close(); }, 500);
 
-            // 1. ОТПРАВЛЯЕМ ДАННЫЕ БОТУ
-            tg.sendData(JSON.stringify(dataToSend));
-            
-            // 2. ЗАКРЫВАЕМ ПРИЛОЖЕНИЕ (принудительно)
-            tg.close(); 
-            
         } catch (e) {
             alert("Ошибка отправки: " + e.message);
         }
-    });
-    </script>
+    };
+</script>
 </body>
 </html>
+
 
 
 
