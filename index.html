@@ -98,47 +98,67 @@
     </div>
 
     <script>
-        const tg = window.Telegram.WebApp;
-        tg.ready();
-        tg.expand();
+       const tg = window.Telegram.WebApp;
+    
+    // Инициализация и разворот
+    tg.ready();
+    tg.expand();
 
-        let selected = null;
-        const btn = document.getElementById('main_btn');
-        const input = document.getElementById('p_id');
+    let selected = null;
+    const btn = document.getElementById('main_btn');
+    const input = document.getElementById('p_id');
 
-        function pick(el, uc, price) {
-            document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
-            el.classList.add('active');
-            selected = { uc, price };
-            check();
-            if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+    // Функция выбора карточки
+    function select(el, uc, price) {
+        document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
+        el.classList.add('active');
+        selected = { uc: String(uc), price: String(price) };
+        validate();
+        if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+    }
+
+    // Проверка заполнения
+    function validate() {
+        const val = input.value.trim();
+        if (selected && val.length >= 5) {
+            btn.disabled = false;
+            btn.style.opacity = "1";
+        } else {
+            btn.disabled = true;
+            btn.style.opacity = "0.3";
         }
+    }
 
-        function check() {
-            if (selected && input.value.trim().length >= 5) {
-                btn.disabled = false;
-                btn.style.opacity = "1";
-            } else {
-                btn.disabled = true;
-                btn.style.opacity = "0.3";
-            }
-        }
+    input.addEventListener('input', validate);
 
-        input.addEventListener('input', check);
-
-        btn.onclick = function() {
-            if (btn.disabled) return;
-            const data = {
+    // НАЖАТИЕ НА КНОПКУ
+    btn.addEventListener('click', () => {
+        try {
+            const dataToSend = {
                 amount: selected.uc,
                 price: selected.price,
                 player_id: input.value.trim()
             };
-            if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-            tg.sendData(JSON.stringify(data));
-        };
+
+            // Вибрация при успехе
+            if (tg.HapticFeedback) {
+                tg.HapticFeedback.notificationOccurred('success');
+            }
+
+            // 1. ОТПРАВЛЯЕМ ДАННЫЕ БОТУ
+            tg.sendData(JSON.stringify(dataToSend));
+            
+            // 2. ЗАКРЫВАЕМ ПРИЛОЖЕНИЕ (принудительно)
+            tg.close(); 
+            
+        } catch (e) {
+            alert("Ошибка отправки: " + e.message);
+        }
+    });
     </script>
 </body>
 </html>
+
 
 
 
