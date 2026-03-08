@@ -1,50 +1,85 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <!-- ПРОВЕРЬ ЭТУ СТРОКУ, ОНА ДОЛЖНА БЫТЬ ТАКОЙ: -->
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <!-- ПРАВИЛЬНОЕ ПОДКЛЮЧЕНИЕ СКРИПТА -->
+    <script src="https://telegram.org"></script>
     <style>
         body { font-family: sans-serif; background: #0f1115; color: white; margin: 0; padding: 15px; text-align: center; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding-bottom: 180px; }
-        .card { background: #1e1e1e; border: 1px solid #333; border-radius: 12px; padding: 15px; cursor: pointer; }
-        .card.active { border-color: #f39c12; background: rgba(243, 156, 18, 0.1); }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding-bottom: 200px; }
+        .card { 
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); 
+            border-radius: 12px; padding: 15px; cursor: pointer; transition: 0.2s;
+        }
+        .card.active { border-color: #f39c12; background: rgba(243, 156, 18, 0.15); box-shadow: 0 0 15px rgba(243, 156, 18, 0.3); }
         .card b { display: block; font-size: 16px; margin-bottom: 5px; }
-        .card span { color: #f39c12; font-weight: bold; }
-        .footer { position: fixed; bottom: 0; left: 0; right: 0; background: #16191f; padding: 20px; border-top: 1px solid #333; }
-        input { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #333; background: #000; color: #fff; margin-bottom: 10px; box-sizing: border-box; text-align: center; font-size: 16px; }
-        button { width: 100%; padding: 16px; border-radius: 10px; border: none; background: #f39c12; color: #000; font-weight: bold; opacity: 0.3; }
+        .card span { color: #f39c12; font-weight: bold; font-size: 14px; }
+        
+        .footer { position: fixed; bottom: 0; left: 0; right: 0; background: #16191f; padding: 20px; border-top: 1px solid #333; z-index: 1000; }
+        input { width: 100%; padding: 14px; border-radius: 10px; border: 1px solid #333; background: #000; color: #fff; margin-bottom: 10px; box-sizing: border-box; text-align: center; font-size: 16px; outline: none; }
+        input:focus { border-color: #f39c12; }
+        button { width: 100%; padding: 16px; border-radius: 10px; border: none; background: #f39c12; color: #000; font-weight: bold; font-size: 16px; opacity: 0.3; text-transform: uppercase; cursor: pointer; }
     </style>
 </head>
 <body>
-    <h2 style="color: #f39c12;">PUBG SHOP</h2>
+
+    <h2 style="color: #f39c12; margin-bottom: 20px;">💎 PUBG UC SHOP</h2>
+
     <div class="grid">
-        <div class="card" onclick="select(this, '60', 90)"><b>💎 60 UC</b><span>90₽</span></div>
-        <div class="card" onclick="select(this, '120', 170)"><b>💎 120 UC</b><span>170₽</span></div>
-        <div class="card" onclick="select(this, '325', 420)"><b>💎 325 UC</b><span>420₽</span></div>
-        <div class="card" onclick="select(this, '660', 810)"><b>💎 660 UC</b><span>810₽</span></div>
-        <div class="card" onclick="select(this, '1800', 2050)"><b>💎 1800 UC</b><span>2050₽</span></div>
-        <div class="card" onclick="select(this, '8100', 7900)"><b>💎 8100 UC</b><span>7900₽</span></div>
+        <!-- ВЕСЬ ТВОЙ ПРАЙС-ЛИСТ -->
+        <div class="card" onclick="select(this, '60', 90)"><b>60 UC</b><span>90₽</span></div>
+        <div class="card" onclick="select(this, '120', 170)"><b>120 UC</b><span>170₽</span></div>
+        <div class="card" onclick="select(this, '180', 250)"><b>180 UC</b><span>250₽</span></div>
+        <div class="card" onclick="select(this, '240', 325)"><b>240 UC</b><span>325₽</span></div>
+        <div class="card" onclick="select(this, '325', 420)"><b>325 UC</b><span>420₽</span></div>
+        <div class="card" onclick="select(this, '385', 490)"><b>385 UC</b><span>490₽</span></div>
+        <div class="card" onclick="select(this, '445', 570)"><b>445 UC</b><span>570₽</span></div>
+        <div class="card" onclick="select(this, '660', 810)"><b>660 UC</b><span>810₽</span></div>
+        <div class="card" onclick="select(this, '720', 890)"><b>720 UC</b><span>890₽</span></div>
+        <div class="card" onclick="select(this, '985', 1200)"><b>985 UC</b><span>1200₽</span></div>
+        <div class="card" onclick="select(this, '1320', 1600)"><b>1320 UC</b><span>1600₽</span></div>
+        <div class="card" onclick="select(this, '1800', 2050)"><b>1800 UC</b><span>2050₽</span></div>
+        <div class="card" onclick="select(this, '1920', 2200)"><b>1920 UC</b><span>2200₽</span></div>
+        <div class="card" onclick="select(this, '2125', 2425)"><b>2125 UC</b><span>2425₽</span></div>
+        <div class="card" onclick="select(this, '2460', 2815)"><b>2460 UC</b><span>2815₽</span></div>
+        <div class="card" onclick="select(this, '3850', 3950)"><b>3850 UC</b><span>3950₽</span></div>
+        <div class="card" onclick="select(this, '4510', 4750)"><b>4510 UC</b><span>4750₽</span></div>
+        <div class="card" onclick="select(this, '5650', 6000)"><b>5650 UC</b><span>6000₽</span></div>
+        <div class="card" onclick="select(this, '8100', 7900)"><b>8100 UC</b><span>7900₽</span></div>
+        <div class="card" onclick="select(this, '9900', 10000)"><b>9900 UC</b><span>10000₽</span></div>
+        <div class="card" onclick="select(this, '11950', 11850)"><b>11950 UC</b><span>11850₽</span></div>
+        <div class="card" onclick="select(this, '16200', 15800)"><b>16200 UC</b><span>15800₽</span></div>
+        <div class="card" onclick="select(this, '24300', 23850)"><b>24300 UC</b><span>23850₽</span></div>
+        <div class="card" onclick="select(this, '32400', 31650)"><b>32400 UC</b><span>31650₽</span></div>
+        <div class="card" onclick="select(this, '40500', 39500)"><b>40500 UC</b><span>39500₽</span></div>
+        <div class="card" onclick="select(this, '81000', 77000)"><b>81000 UC</b><span>77000₽</span></div>
     </div>
+
     <div class="footer">
-        <input type="number" id="p_id" placeholder="Ваш Player ID">
-        <button id="main_btn" disabled onclick="sendData()">ОФОРМИТЬ ЗАКАЗ</button>
+        <input type="number" id="p_id" placeholder="Введите Ваш Player ID">
+        <button id="main_btn" disabled>Оформить заказ</button>
     </div>
+
     <script>
-        let tg = window.Telegram.WebApp;
+        const tg = window.Telegram.WebApp;
+        tg.ready();
         tg.expand();
+
         let selected = null;
+        const btn = document.getElementById('main_btn');
+        const inputId = document.getElementById('p_id');
+
         function select(el, uc, price) {
             document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
             el.classList.add('active');
-            selected = { uc, price };
+            selected = { uc: uc, price: price };
             validate();
+            if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
         }
+
         function validate() {
-            const btn = document.getElementById('main_btn');
-            const input = document.getElementById('p_id');
-            if (selected && input.value.length >= 5) {
+            if (selected && inputId.value.trim().length >= 5) {
                 btn.disabled = false;
                 btn.style.opacity = "1";
             } else {
@@ -52,13 +87,27 @@
                 btn.style.opacity = "0.3";
             }
         }
-        document.getElementById('p_id').oninput = validate;
-        function sendData() {
-            const input = document.getElementById('p_id');
-            tg.sendData(JSON.stringify({amount: selected.uc, price: selected.price, player_id: input.value}));
-        }
+
+        inputId.addEventListener('input', validate);
+
+        btn.addEventListener('click', function() {
+            if (!selected || inputId.value.length < 5) return;
+
+            const data = {
+                amount: selected.uc,
+                price: selected.price,
+                player_id: inputId.value
+            };
+
+            if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+            
+            // ОТПРАВКА ДАННЫХ
+            tg.sendData(JSON.stringify(data));
+            tg.close(); // Закрываем приложение после отправки
+        });
     </script>
 </body>
 </html>
+
 
 
