@@ -5,143 +5,75 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        :root { --gold: #f39c12; --bg: #0f1115; --card: rgba(255,255,255,0.05); }
-        body { font-family: 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: white; margin: 0; padding: 15px; -webkit-user-select: none; }
-        .header { text-align: center; margin-bottom: 20px; }
-        .header h1 { color: var(--gold); font-size: 24px; margin: 0; text-transform: uppercase; letter-spacing: 1px; }
-        
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding-bottom: 180px; }
-        
-        .card { 
-            background: var(--card); border: 1px solid rgba(255,255,255,0.1); 
-            border-radius: 14px; padding: 18px 10px; text-align: center; 
-            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); position: relative;
-        }
-        
-        /* Эффект при нажатии */
-        .card:active { transform: scale(0.95); }
-        
-        /* Стиль ВЫБРАННОЙ карточки */
-        .card.active { 
-            border-color: var(--gold); 
-            background: rgba(243, 156, 18, 0.15); 
-            box-shadow: 0 0 20px rgba(243, 156, 18, 0.2); 
-        }
-
-        .card b { display: block; font-size: 18px; margin-bottom: 4px; color: #fff; }
-        .card b::before { content: "💎 "; } /* Возвращаем эмодзи через код */
-        .card span { color: var(--gold); font-weight: bold; font-size: 15px; display: block; }
-
-        .footer { 
-            position: fixed; bottom: 0; left: 0; right: 0; 
-            background: rgba(22, 25, 31, 0.98); padding: 20px; 
-            border-top: 1px solid rgba(255, 255, 255, 0.1); z-index: 1000; 
-            backdrop-filter: blur(10px);
-        }
-        
-        input { 
-            width: 100%; padding: 14px; border-radius: 12px; 
-            border: 1px solid #333; background: #000; color: #fff; 
-            margin-bottom: 12px; box-sizing: border-box; text-align: center; font-size: 16px; outline: none;
-        }
-        input:focus { border-color: var(--gold); }
-
-        .btn-pay { 
-            width: 100%; padding: 16px; border-radius: 12px; border: none;
-            background: linear-gradient(135deg, #f39c12, #d35400); 
-            color: #000; font-weight: bold; font-size: 16px; 
-            text-transform: uppercase; letter-spacing: 1px;
-            opacity: 0.3; transition: 0.3s; cursor: pointer;
-        }
+        body { font-family: sans-serif; background: #0f1115; color: white; margin: 0; padding: 15px; text-align: center; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding-bottom: 180px; }
+        .card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 15px; cursor: pointer; transition: 0.2s; }
+        .card.active { border-color: #f39c12; background: rgba(243, 156, 18, 0.15); box-shadow: 0 0 15px rgba(243, 156, 18, 0.2); }
+        .card b { display: block; font-size: 16px; margin-bottom: 5px; }
+        .card b::before { content: "💎 "; }
+        .card span { color: #f39c12; font-weight: bold; }
+        .footer { position: fixed; bottom: 0; left: 0; right: 0; background: #16191f; padding: 20px; border-top: 1px solid #333; z-index: 1000; }
+        input { width: 100%; padding: 14px; border-radius: 10px; border: 1px solid #333; background: #000; color: #fff; margin-bottom: 10px; box-sizing: border-box; text-align: center; font-size: 16px; outline: none; }
+        button { width: 100%; padding: 16px; border-radius: 10px; border: none; background: #f39c12; color: #000; font-weight: bold; font-size: 16px; opacity: 0.3; text-transform: uppercase; }
     </style>
 </head>
 <body>
-
-    <div class="header">
-        <h1>PUBG SHOP</h1>
-        <p style="color: #888; font-size: 13px; margin-top: 5px;">Выберите пакет UC и введите свой ID</p>
+    <h2 style="color: #f39c12;">PUBG UC SHOP</h2>
+    <div class="grid">
+        <!-- Твой прайс -->
+        <div class="card" onclick="selectItem(this, '60', '90')"><b>60 UC</b><span>90₽</span></div>
+        <div class="card" onclick="selectItem(this, '120', '170')"><b>120 UC</b><span>170₽</span></div>
+        <div class="card" onclick="selectItem(this, '325', '420')"><b>325 UC</b><span>420₽</span></div>
+        <div class="card" onclick="selectItem(this, '660', '810')"><b>660 UC</b><span>810₽</span></div>
+        <div class="card" onclick="selectItem(this, '1800', '2050')"><b>1800 UC</b><span>2050₽</span></div>
+        <div class="card" onclick="selectItem(this, '8100', '7900')"><b>8100 UC</b><span>7900₽</span></div>
+        <!-- Можешь добавить остальные по аналогии -->
     </div>
-
-    <div class="grid" id="container">
-        <!-- КАРТОЧКИ -->
-        <div class="card" onclick="pick(this, '60', 90)"><b>60 UC</b><span>90₽</span></div>
-        <div class="card" onclick="pick(this, '120', 170)"><b>120 UC</b><span>170₽</span></div>
-        <div class="card" onclick="pick(this, '180', 250)"><b>180 UC</b><span>250₽</span></div>
-        <div class="card" onclick="pick(this, '240', 325)"><b>240 UC</b><span>325₽</span></div>
-        <div class="card" onclick="pick(this, '325', 420)"><b>325 UC</b><span>420₽</span></div>
-        <div class="card" onclick="pick(this, '385', 490)"><b>385 UC</b><span>490₽</span></div>
-        <div class="card" onclick="pick(this, '445', 570)"><b>445 UC</b><span>570₽</span></div>
-        <div class="card" onclick="pick(this, '660', 810)"><b>660 UC</b><span>810₽</span></div>
-        <div class="card" onclick="pick(this, '720', 890)"><b>720 UC</b><span>890₽</span></div>
-        <div class="card" onclick="pick(this, '985', 1200)"><b>985 UC</b><span>1200₽</span></div>
-        <div class="card" onclick="pick(this, '1320', 1600)"><b>1320 UC</b><span>1600₽</span></div>
-        <div class="card" onclick="pick(this, '1800', 2050)"><b>1800 UC</b><span>2050₽</span></div>
-        <div class="card" onclick="pick(this, '1920', 2200)"><b>1920 UC</b><span>2200₽</span></div>
-        <div class="card" onclick="pick(this, '2125', 2425)"><b>2125 UC</b><span>2425₽</span></div>
-        <div class="card" onclick="pick(this, '2460', 2815)"><b>2460 UC</b><span>2815₽</span></div>
-        <div class="card" onclick="pick(this, '3850', 3950)"><b>3850 UC</b><span>3950₽</span></div>
-        <div class="card" onclick="pick(this, '4510', 4750)"><b>4510 UC</b><span>4750₽</span></div>
-        <div class="card" onclick="pick(this, '5650', 6000)"><b>5650 UC</b><span>6000₽</span></div>
-        <div class="card" onclick="pick(this, '8100', 7900)"><b>8100 UC</b><span>7900₽</span></div>
-        <div class="card" onclick="pick(this, '9900', 10000)"><b>9900 UC</b><span>10000₽</span></div>
-        <div class="card" onclick="pick(this, '11950', 11850)"><b>11950 UC</b><span>11850₽</span></div>
-        <div class="card" onclick="pick(this, '16200', 15800)"><b>16200 UC</b><span>15800₽</span></div>
-        <div class="card" onclick="pick(this, '24300', 23850)"><b>24300 UC</b><span>23850₽</span></div>
-        <div class="card" onclick="pick(this, '32400', 31650)"><b>32400 UC</b><span>31650₽</span></div>
-        <div class="card" onclick="pick(this, '40500', 39500)"><b>40500 UC</b><span>39500₽</span></div>
-        <div class="card" onclick="pick(this, '81000', 77000)"><b>81000 UC</b><span>77000₽</span></div>
-    </div>
-
     <div class="footer">
-        <input type="number" id="p_id" placeholder="Введите Ваш Player ID">
-        <button id="main_btn" class="btn-pay" disabled>Оформить заказ</button>
+        <input type="number" id="p_id" placeholder="Ваш Player ID">
+        <button id="main_btn" disabled>Оформить заказ</button>
     </div>
 
-   <script>
-    const tg = window.Telegram.WebApp;
-    tg.ready();
-    tg.expand();
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+        tg.expand();
 
-    let selected = null;
-    const btn = document.getElementById('main_btn');
-    const input = document.getElementById('p_id');
+        let selectedData = null;
+        const btn = document.getElementById('main_btn');
+        const input = document.getElementById('p_id');
 
-    function select(el, uc, price) {
-        document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
-        el.classList.add('active');
-        selected = { uc: String(uc), price: String(price) };
-        validate();
-    }
-
-    function validate() {
-        if (selected && input.value.trim().length >= 5) {
-            btn.disabled = false; btn.style.opacity = "1";
-        } else {
-            btn.disabled = true; btn.style.opacity = "0.3";
+        function selectItem(el, uc, price) {
+            document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
+            selectedData = { amount: uc, price: price };
+            validate();
+            if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
         }
-    }
 
-    input.addEventListener('input', validate);
+        function validate() {
+            if (selectedData && input.value.trim().length >= 5) {
+                btn.disabled = false;
+                btn.style.opacity = "1";
+            } else {
+                btn.disabled = true;
+                btn.style.opacity = "0.3";
+            }
+        }
 
-    btn.onclick = function() {
-        try {
-            const data = JSON.stringify({
-                amount: selected.uc,
-                price: selected.price,
+        input.addEventListener('input', validate);
+
+        btn.onclick = function() {
+            if (!selectedData || input.value.length < 5) return;
+            const result = {
+                amount: selectedData.amount,
+                price: selectedData.price,
                 player_id: input.value.trim()
-            });
-
-            // Пытаемся отправить данные
-            tg.sendData(data);
-            
-            // Если через 500мс окно не закрылось, закрываем принудительно
-            setTimeout(() => { tg.close(); }, 500);
-
-        } catch (e) {
-            alert("Ошибка отправки: " + e.message);
-        }
-    };
-</script>
+            };
+            tg.sendData(JSON.stringify(result));
+            setTimeout(() => { tg.close(); }, 100);
+        };
+    </script>
 </body>
 </html>
 
