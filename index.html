@@ -68,46 +68,57 @@
 
         let selected = null;
         const btn = document.getElementById('main_btn');
-        const inputId = document.getElementById('p_id');
+        const input = document.getElementById('p_id');
 
+        // Функция выбора карточки
         function select(el, uc, price) {
+            // Убираем активный класс у всех
             document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
+            // Добавляем текущей
             el.classList.add('active');
+            // Сохраняем выбор
             selected = { uc: uc, price: price };
-            validate();
+            
+            validate(); // Проверяем форму
             if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
         }
 
+        // Функция проверки полей
         function validate() {
-            if (selected && inputId.value.trim().length >= 5) {
+            const val = input.value.trim();
+            // Если выбран пак И введено 5+ цифр
+            if (selected && val.length >= 5) {
                 btn.disabled = false;
                 btn.style.opacity = "1";
+                btn.style.background = "#f39c12"; // На всякий случай принудительно красим
             } else {
                 btn.disabled = true;
                 btn.style.opacity = "0.3";
             }
         }
 
-        inputId.addEventListener('input', validate);
+        // Следим за вводом ID
+        input.addEventListener('input', validate);
 
+        // Отправка данных
         btn.addEventListener('click', function() {
-            if (!selected || inputId.value.length < 5) return;
+            if (btn.disabled) return;
 
             const data = {
                 amount: selected.uc,
                 price: selected.price,
-                player_id: inputId.value
+                player_id: input.value.trim()
             };
 
             if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
             
-            // ОТПРАВКА ДАННЫХ
+            // Отправляем боту
             tg.sendData(JSON.stringify(data));
-            tg.close(); // Закрываем приложение после отправки
         });
     </script>
 </body>
 </html>
+
 
 
 
