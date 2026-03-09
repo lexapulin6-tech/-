@@ -2,83 +2,82 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://telegram.org"></script>
     <style>
-        body { font-family: sans-serif; background: #0f1115; color: white; margin: 0; padding: 15px; text-align: center; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding-bottom: 180px; }
-        .card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 15px; cursor: pointer; transition: 0.2s; }
-        .card.active { border-color: #f39c12; background: rgba(243, 156, 18, 0.15); box-shadow: 0 0 15px rgba(243, 156, 18, 0.2); }
-        .card b { display: block; font-size: 16px; margin-bottom: 5px; }
-        .card b::before { content: "💎 "; }
-        .card span { color: #f39c12; font-weight: bold; }
-        .footer { position: fixed; bottom: 0; left: 0; right: 0; background: #16191f; padding: 20px; border-top: 1px solid #333; z-index: 1000; }
-        input { width: 100%; padding: 14px; border-radius: 10px; border: 1px solid #333; background: #000; color: #fff; margin-bottom: 10px; box-sizing: border-box; text-align: center; font-size: 16px; outline: none; }
-        button { width: 100%; padding: 16px; border-radius: 10px; border: none; background: #f39c12; color: #000; font-weight: bold; font-size: 16px; opacity: 0.3; text-transform: uppercase; }
+        :root {
+            --tg-theme-bg: var(--tg-theme-bg-color, #1a1a1a);
+            --tg-theme-text: var(--tg-theme-text-color, #ffffff);
+            --accent: #f39c12;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--tg-theme-bg);
+            color: var(--tg-theme-text);
+            margin: 0; padding: 15px;
+        }
+        .header { text-align: center; margin-bottom: 20px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--accent);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            transition: transform 0.1s;
+        }
+        .card:active { transform: scale(0.95); }
+        .uc-amount { font-size: 1.2em; font-weight: bold; color: var(--accent); display: block; }
+        .price { font-size: 0.9em; opacity: 0.8; }
+        .buy-btn {
+            margin-top: 10px;
+            background: var(--accent);
+            color: black;
+            border: none;
+            padding: 8px;
+            width: 100%;
+            border-radius: 6px;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
-    <h2 style="color: #f39c12;">PUBG UC SHOP</h2>
-    <div class="grid">
-        <!-- Твой прайс -->
-        <div class="card" onclick="selectItem(this, '60', '90')"><b>60 UC</b><span>90₽</span></div>
-        <div class="card" onclick="selectItem(this, '120', '170')"><b>120 UC</b><span>170₽</span></div>
-        <div class="card" onclick="selectItem(this, '325', '420')"><b>325 UC</b><span>420₽</span></div>
-        <div class="card" onclick="selectItem(this, '660', '810')"><b>660 UC</b><span>810₽</span></div>
-        <div class="card" onclick="selectItem(this, '1800', '2050')"><b>1800 UC</b><span>2050₽</span></div>
-        <div class="card" onclick="selectItem(this, '8100', '7900')"><b>8100 UC</b><span>7900₽</span></div>
-        <!-- Можешь добавить остальные по аналогии -->
+    <div class="header">
+        <h2>Магазин PUBG UC</h2>
+        <p>Выберите желаемый пакет</p>
     </div>
-    <div class="footer">
-        <input type="number" id="p_id" placeholder="Ваш Player ID">
-        <button id="main_btn" disabled>Оформить заказ</button>
-    </div>
+    <div class="grid" id="container"></div>
 
     <script>
         const tg = window.Telegram.WebApp;
-        tg.ready();
         tg.expand();
 
-        let selectedData = null;
-        const btn = document.getElementById('main_btn');
-        const input = document.getElementById('p_id');
-
-        function selectItem(el, uc, price) {
-            document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
-            el.classList.add('active');
-            selectedData = { amount: uc, price: price };
-            validate();
-            if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
-        }
-
-        function validate() {
-            if (selectedData && input.value.trim().length >= 5) {
-                btn.disabled = false;
-                btn.style.opacity = "1";
-            } else {
-                btn.disabled = true;
-                btn.style.opacity = "0.3";
-            }
-        }
-
-        input.addEventListener('input', validate);
-
-        btn.onclick = function() {
-            if (!selectedData || input.value.length < 5) return;
-            const result = {
-                amount: selectedData.amount,
-                price: selectedData.price,
-                player_id: input.value.trim()
-            };
-            tg.sendData(JSON.stringify(result));
-            setTimeout(() => { tg.close(); }, 100);
+        const prices = {
+            "60": 90, "120": 170, "180": 250, "240": 325, "325": 420, "385": 490, 
+            "445": 570, "660": 810, "720": 890, "985": 1200, "1320": 1600, 
+            "1800": 2050, "1920": 2200, "2125": 2425, "2460": 2815, "3850": 3950, 
+            "4510": 4750, "5650": 6000, "8100": 7900, "9900": 10000, "11950": 11850, 
+            "16200": 15800, "24300": 23850, "32400": 31650, "40500": 39500, "81000": 77000
         };
+
+        const container = document.getElementById('container');
+
+        Object.entries(prices).forEach(([uc, price]) => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `
+                <span class="uc-amount">${uc} UC</span>
+                <span class="price">${price}₽</span>
+                <button class="buy-btn">Выбрать</button>
+            `;
+            card.onclick = () => {
+                tg.sendData(JSON.stringify({uc: uc, price: price}));
+            };
+            container.appendChild(card);
+        });
     </script>
 </body>
 </html>
-
-
-
 
 
 
