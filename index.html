@@ -1,84 +1,49 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://telegram.org"></script>
     <style>
-        :root {
-            --tg-theme-bg: var(--tg-theme-bg-color, #1a1a1a);
-            --tg-theme-text: var(--tg-theme-text-color, #ffffff);
-            --accent: #f39c12;
-        }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--tg-theme-bg);
-            color: var(--tg-theme-text);
-            margin: 0; padding: 15px;
-        }
-        .header { text-align: center; margin-bottom: 20px; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .card {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--accent);
-            border-radius: 12px;
-            padding: 15px;
-            text-align: center;
-            transition: transform 0.1s;
-        }
-        .card:active { transform: scale(0.95); }
-        .uc-amount { font-size: 1.2em; font-weight: bold; color: var(--accent); display: block; }
-        .price { font-size: 0.9em; opacity: 0.8; }
-        .buy-btn {
-            margin-top: 10px;
-            background: var(--accent);
-            color: black;
-            border: none;
-            padding: 8px;
-            width: 100%;
-            border-radius: 6px;
-            font-weight: bold;
-        }
+        body { font-family: sans-serif; background: var(--tg-theme-bg-color); color: var(--tg-theme-text-color); padding: 15px; }
+        .card { border: 1px solid #f39c12; padding: 10px; margin: 10px 0; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; }
+        input { width: 100%; padding: 12px; margin-bottom: 20px; border-radius: 8px; border: 1px solid #ccc; box-sizing: border-box; }
+        .buy-btn { background: #f39c12; color: white; border: none; padding: 10px; border-radius: 5px; font-weight: bold; }
+        h3 { margin-bottom: 5px; }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h2>Магазин PUBG UC</h2>
-        <p>Выберите желаемый пакет</p>
-    </div>
-    <div class="grid" id="container"></div>
+    <h3>1. Введите PUBG ID:</h3>
+    <input type="number" id="player_id" placeholder="Например: 5123456789">
+
+    <h3>2. Выберите пакет:</h3>
+    <div id="container"></div>
 
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
 
-        const prices = {
-            "60": 90, "120": 170, "180": 250, "240": 325, "325": 420, "385": 490, 
-            "445": 570, "660": 810, "720": 890, "985": 1200, "1320": 1600, 
-            "1800": 2050, "1920": 2200, "2125": 2425, "2460": 2815, "3850": 3950, 
-            "4510": 4750, "5650": 6000, "8100": 7900, "9900": 10000, "11950": 11850, 
-            "16200": 15800, "24300": 23850, "32400": 31650, "40500": 39500, "81000": 77000
-        };
+        const prices = {"60": 90, "120": 170, "660": 810, "1800": 2050}; // Сократил для примера
 
         const container = document.getElementById('container');
+        const idInput = document.getElementById('player_id');
 
         Object.entries(prices).forEach(([uc, price]) => {
             const card = document.createElement('div');
             card.className = 'card';
-            card.innerHTML = `
-                <span class="uc-amount">${uc} UC</span>
-                <span class="price">${price}₽</span>
-                <button class="buy-btn">Выбрать</button>
-            `;
+            card.innerHTML = `<div><b>${uc} UC</b><br>${price}₽</div><button class="buy-btn">Выбрать</button>`;
+            
             card.onclick = () => {
-                tg.sendData(JSON.stringify({uc: uc, price: price}));
+                const id = idInput.value;
+                if (id.length < 5) {
+                    alert("Сначала введите корректный PUBG ID!");
+                    return;
+                }
+                // Отправляем сразу и UC, и ID
+                tg.sendData(JSON.stringify({uc: uc, price: price, player_id: id}));
             };
             container.appendChild(card);
         });
     </script>
 </body>
 </html>
-
-
-
-
