@@ -12,47 +12,42 @@
             --text: #ffffff;
         }
         body {
-            font-family: 'Roboto', sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg);
             color: var(--text);
             margin: 0; padding: 15px;
-            -webkit-user-select: none;
         }
         .header { text-align: center; margin-bottom: 20px; }
-        .header h2 { color: var(--accent); text-transform: uppercase; letter-spacing: 2px; }
+        .header h2 { color: var(--accent); margin: 10px 0; text-transform: uppercase; }
         
-        .input-group { margin-bottom: 20px; }
         input {
             width: 100%; padding: 15px;
             background: var(--card-bg);
             border: 1px solid #333;
             border-radius: 10px;
             color: white; font-size: 16px;
-            box-sizing: border-box; outline: none;
+            box-sizing: border-box; margin-bottom: 20px;
         }
-        input:focus { border-color: var(--accent); }
+        input:focus { border-color: var(--accent); outline: none; }
 
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 30px; }
         .card {
             background: var(--card-bg);
             border: 1px solid #333;
             border-radius: 12px;
             padding: 15px;
             text-align: center;
-            position: relative;
-            overflow: hidden;
+            cursor: pointer;
         }
-        .card:active { background: #252525; }
+        .card:active { transform: scale(0.98); background: #252525; }
         .uc-amount { font-size: 18px; font-weight: bold; color: var(--accent); display: block; }
         .price { font-size: 14px; opacity: 0.7; }
-        
         .buy-btn {
             margin-top: 10px;
             background: var(--accent);
             color: #000; border: none;
             padding: 8px; width: 100%;
             border-radius: 6px; font-weight: bold;
-            cursor: pointer;
         }
     </style>
 </head>
@@ -61,18 +56,16 @@
         <h2>PUBG UC STORE</h2>
     </div>
 
-    <div class="input-group">
-        <input type="number" id="player_id" placeholder="Введите ваш Player ID...">
-    </div>
+    <input type="number" id="player_id" placeholder="Введите ваш PUBG ID (цифры)">
 
-    <div class="grid" id="container"></div>
+    <div class="grid" id="container">
+        <!-- Товары добавятся сюда автоматически через JS -->
+    </div>
 
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
-        tg.ready();
 
-        // Все твои цены
         const prices = {
             "60": 90, "120": 170, "180": 250, "240": 325, "325": 420, "385": 490, 
             "445": 570, "660": 810, "720": 890, "985": 1200, "1320": 1600, 
@@ -84,31 +77,32 @@
         const container = document.getElementById('container');
         const idInput = document.getElementById('player_id');
 
+        // Создаем карточки товаров
         Object.entries(prices).forEach(([uc, price]) => {
             const card = document.createElement('div');
             card.className = 'card';
             card.innerHTML = `
                 <span class="uc-amount">${uc} UC</span>
                 <span class="price">${price}₽</span>
-                <button class="buy-btn">КУПИТЬ</button>
+                <button class="buy-btn">ВЫБРАТЬ</button>
             `;
             
             card.onclick = () => {
                 const pid = idInput.value.trim();
                 if (pid.length < 5) {
-                    tg.showAlert("Сначала введите корректный Player ID!");
+                    alert("Сначала введите ваш PUBG ID!");
                     return;
                 }
 
-                const data = {
+                // Формируем данные для отправки боту
+                const orderData = JSON.stringify({
                     uc: uc,
                     price: price,
-                    id: pid
-                };
+                    player_id: pid
+                });
 
-                // ЭТО ВАЖНО: отправка данных
-                tg.sendData(JSON.stringify(data));
-                tg.close(); // Закрываем окно после выбора
+                tg.sendData(orderData); // Отправляем боту
+                tg.close(); // Закрываем окно
             };
             container.appendChild(card);
         });
